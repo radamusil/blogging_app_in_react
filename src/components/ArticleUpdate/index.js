@@ -42,6 +42,19 @@ const ArticleUpdate = (props) => {
         setContent(event.target.value);
     }
 
+    if (article) {
+    if (title === ''){
+        setTitle(article.title);
+    };
+    if (perex === ''){
+        setPerex(article.perex);
+    };
+    if (content === ''){
+        setContent(article.content);
+    };
+    }
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -65,7 +78,7 @@ const ArticleUpdate = (props) => {
             <div className="form_element">
                 <label>
                     Title
-                    <input type="text" name="title" defaultValue={article.title} /* value={title} */ onChange={ handleTitleChange }/>
+                    <input type="text" name="title" defaultValue={article.title} onChange={ handleTitleChange }/>
                 </label>
             </div>
             <div className="form_element">
