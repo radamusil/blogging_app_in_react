@@ -1,11 +1,13 @@
-import React, {useEffect, useContext, useState} from 'react';
+import React, { useContext, useState} from 'react';
 import axios from 'axios';
 import { TokenContext } from '../../App';
+import UploadImage from '../UploadImage'
 
 const CreateArticle = (props) => {
     const [title, setTitle] = useState('');
     const [perex, setPerex] = useState('');
     const [content, setContent] = useState('');
+    const [imageId, setImageId] = useState('');
     const token = useContext(TokenContext);
 
     const handleTitleChange = (event) => {
@@ -28,7 +30,10 @@ const CreateArticle = (props) => {
         article.title= title;
         article.perex= perex;
         article.content= content;
+        article.imageId = imageId;
         //article.append('imageId', imageId);
+
+        console.log(article);
         const response = await axios.post('https://fullstack.exercise.applifting.cz/articles', article, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
@@ -36,7 +41,13 @@ const CreateArticle = (props) => {
             }},);
     }
 
+/*     useEffect(
+        console.log(imageId),[]
+    ); */
+
     return (
+        <>
+        <UploadImage setImageId={ setImageId }/>
         <form onSubmit={handleSubmit}>
             <div className="form_element">
                 <label>
@@ -58,6 +69,7 @@ const CreateArticle = (props) => {
             </div>
             <button>Create Article</button>
         </form>
+        </>
     )
 }
 

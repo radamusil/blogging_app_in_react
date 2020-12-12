@@ -2,13 +2,18 @@ import React, {useEffect, useContext, useState} from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { TokenContext } from '../../App';
+import DisplayImg from '../DisplayImg';
+import UploadImage from '../UploadImage'
+
 
 const ArticleUpdate = (props) => {
     const [title, setTitle] = useState('');
     const [perex, setPerex] = useState('');
     const [content, setContent] = useState('');
+    const [imageStatus, setImageStatus] = useState(true);
     const token = useContext(TokenContext);
     const { id } = useParams();
+    const [imageId, setImageId] = useState('');
 
     const [article, setArticle] = useState(null);
 
@@ -52,6 +57,9 @@ const ArticleUpdate = (props) => {
     if (content === ''){
         setContent(article.content);
     };
+    if (imageId === ''){
+        setImageId(article.imageId);
+    };
     }
 
 
@@ -63,7 +71,8 @@ const ArticleUpdate = (props) => {
         article.title= title;
         article.perex= perex;
         article.content= content;
-        //article.append('imageId', imageId);
+        article.imageId = imageId;
+        
         const response = await axios.patch('https://fullstack.exercise.applifting.cz/articles/' + id, article, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
@@ -71,9 +80,32 @@ const ArticleUpdate = (props) => {
             }},);
     }
 
+    const handleImgDelete = async () => {
+        const response = await axios.delete('https://fullstack.exercise.applifting.cz/images/' + article.imageId, {
+        headers: {
+          'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
+          'Authorization': token
+        }},);
+
+        setImageStatus(false);
+
+    }
+
+
+
     return (
         <div>
         {article ?
+        <div>
+        { imageStatus === true ?
+        <>
+            <DisplayImg article={ article }/>
+            <button onClick={handleImgDelete}>Delete Image</button>
+        </> : 
+        <div>
+            <UploadImage setImageId={ setImageId } setImageStatus={setImageStatus} />
+        </div>
+        }
         <form onSubmit={handleSubmit}>
             <div className="form_element">
                 <label>
@@ -94,7 +126,9 @@ const ArticleUpdate = (props) => {
                 </label>
             </div>
             <button>Update Article</button>
-        </form> :
+        </form>
+        </div>
+         :
         <div>Loading..</div> }
         </div>
     )

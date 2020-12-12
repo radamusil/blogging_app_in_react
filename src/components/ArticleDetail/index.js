@@ -2,6 +2,9 @@ import React, {useEffect, useContext, useState} from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { TokenContext } from '../../App';
+import DisplayImg from '../DisplayImg'
+import CreateComment from '../CreateComment'
+import DisplayComment from '../DisplayComment'
 
 
 const ArticleDetail = (props) => {
@@ -29,10 +32,17 @@ const ArticleDetail = (props) => {
     return (
         <div>
         {article ? 
+        <div>
         <article>
+            <DisplayImg article={ article } />
             <h2>{article.title}</h2>
             <p>{article.content}</p>
-        </article> :
+        </article>
+        {article.comments.map((comment, index) => (
+            <DisplayComment key= {index} comment = {comment} />
+            ))}
+        <CreateComment article={ article } />
+        </div> :
        <p>Loading...</p>
         }
         </div>
