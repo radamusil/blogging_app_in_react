@@ -2,11 +2,13 @@ import React, { useContext, useState} from 'react';
 import axios from 'axios';
 import { TokenContext } from '../../App';
 
+
 const CreateComment = (props) => {
     const token = useContext(TokenContext);
     const articleId = props.article.articleId;
     const [author, setAuthor] = useState('');
     const [content, setContent] = useState('');
+   
 
     const handleAuthorChange = (event) => {
         setAuthor(event.target.value);
@@ -32,26 +34,24 @@ const CreateComment = (props) => {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
               'Authorization': token
             }},);
+
+            props.setRedirect('/article_detail/' + articleId);
     }
 
+
+
     return (
-        <>
+        <div className="create_comment">
         <form onSubmit={handleSubmit}>
             <div className="form_element">
-                <label>
-                    Name
-                    <input type="text" name="author" value={author} onChange={ handleAuthorChange }/>
-                </label>
+                    <input type="text" name="author" placeholder="Name" value={author} onChange={ handleAuthorChange }/>
             </div>
             <div className="form_element">
-                <label>
-                    Comment
-                    <textarea type="text" name="content" value={content} onChange={ handleContentChange } rows="4" cols="50"/>
-                </label>
+                    <textarea type="text" name="content" placeholder="Comment" value={content} onChange={ handleContentChange } rows="4" cols="50"/>
             </div>
             <button>Send Comment</button>
         </form>
-        </>
+        </div>
     )
 }
 

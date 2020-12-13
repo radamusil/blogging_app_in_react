@@ -10,7 +10,7 @@ const DisplayComment = (props) => {
     console.log(comment);
 
     const handleUp = async () => {
-        const response = await axios.post('https://fullstack.exercise.applifting.cz/comments/' + comment.commentId + '/vote/up', comment, {
+        const response = await axios.post('https://fullstack.exercise.applifting.cz/comments/' + comment.commentId + '/vote/up', 1, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
               'Authorization': token
@@ -18,22 +18,24 @@ const DisplayComment = (props) => {
     }
 
     const handleDown = async () => {
-        const response = await axios.post('https://fullstack.exercise.applifting.cz/comments/' + comment.commentId + '/vote/down', comment, {
+        const response = await axios.post('https://fullstack.exercise.applifting.cz/comments/' + comment.commentId + '/vote/down', -1, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
               'Authorization': token
             }},);
     }
 
+
     return(
-        <div>
+        <div className="comment">
             <h3>{comment.author}</h3>
             <p>{comment.content}</p>
             <div className="rating">
-            <p>{comment.score}</p>
+            <p>Score: {comment.score}</p>
             <button onClick={handleUp}>+</button>
             <button onClick={handleDown}>-</button>
             </div>
+            <hr/>
 
         </div>
     )

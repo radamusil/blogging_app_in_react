@@ -3,7 +3,8 @@ import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { TokenContext } from '../../App';
 import DisplayImg from '../DisplayImg';
-import UploadImage from '../UploadImage'
+import UploadImage from '../UploadImage';
+import { Redirect } from 'react-router-dom';
 
 
 const ArticleUpdate = (props) => {
@@ -14,7 +15,7 @@ const ArticleUpdate = (props) => {
     const token = useContext(TokenContext);
     const { id } = useParams();
     const [imageId, setImageId] = useState('');
-
+    const [redirect, setRedirect] = useState(null);
     const [article, setArticle] = useState(null);
 
     const getArticle = async () => {
@@ -26,12 +27,18 @@ const ArticleUpdate = (props) => {
         const data = response.data;
 
         setArticle(data);
-        console.log(data);
+        //console.log(data);
     }
 
     useEffect(() => {
         getArticle();
     }, []);
+
+    if (redirect) {
+        return (
+            <Redirect to={ redirect } />
+        )
+    } 
 
 
 
@@ -66,18 +73,20 @@ const ArticleUpdate = (props) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        let article = {};
+        let article1 = {};
         
-        article.title= title;
-        article.perex= perex;
-        article.content= content;
-        article.imageId = imageId;
+        article1.title= title;
+        article1.perex= perex;
+        article1.content= content;
+        article1.imageId = imageId;
         
         const response = await axios.patch('https://fullstack.exercise.applifting.cz/articles/' + id, article, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
               'Authorization': token
             }},);
+
+        setRedirect('/article_detail/' + article.articleId)
     }
 
     const handleImgDelete = async () => {
@@ -108,22 +117,19 @@ const ArticleUpdate = (props) => {
         }
         <form onSubmit={handleSubmit}>
             <div className="form_element">
-                <label>
-                    Title
+
                     <input type="text" name="title" defaultValue={article.title} onChange={ handleTitleChange }/>
-                </label>
+
             </div>
             <div className="form_element">
-                <label>
-                    Perex
+
                     <textarea type="text" name="perex" defaultValue={article.perex} onChange={ handlePerexChange } rows="4" cols="50"/>
-                </label>
+                
             </div>
             <div className="form_element">
-                <label>
-                    Content
+
                     <textarea type="text" name="content" defaultValue={article.content} onChange={ handleContentChange } rows="10" cols="50"/>
-                </label>
+                
             </div>
             <button>Update Article</button>
         </form>

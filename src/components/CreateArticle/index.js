@@ -1,7 +1,8 @@
 import React, { useContext, useState} from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import { TokenContext } from '../../App';
-import UploadImage from '../UploadImage'
+import UploadImage from '../UploadImage';
 
 const CreateArticle = (props) => {
     const [title, setTitle] = useState('');
@@ -9,6 +10,8 @@ const CreateArticle = (props) => {
     const [content, setContent] = useState('');
     const [imageId, setImageId] = useState('');
     const token = useContext(TokenContext);
+    const [imageStatus, setImageStatus] = useState(false);
+    const [redirect, setRedirect] = useState(null);
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
@@ -31,46 +34,51 @@ const CreateArticle = (props) => {
         article.perex= perex;
         article.content= content;
         article.imageId = imageId;
-        //article.append('imageId', imageId);
+        
 
-        console.log(article);
+        //console.log(article);
         const response = await axios.post('https://fullstack.exercise.applifting.cz/articles', article, {
             headers: {
               'X-API-KEY': '82738e38-0e14-47dd-925e-8b803fabb0ff',
               'Authorization': token
             }},);
+
+            setRedirect('/');
     }
 
-/*     useEffect(
-        console.log(imageId),[]
-    ); */
+        if (redirect) {
+            return (
+                <Redirect to={ redirect } />
+            )
+        } 
+/*     if (token ) {
+        console.log(token); */
+        return (
+            <>
+            <UploadImage setImageStatus={setImageStatus} setImageId={ setImageId }/>
+            <form onSubmit={handleSubmit}>
+                <div className="form_element">
 
-    return (
-        <>
-        <UploadImage setImageId={ setImageId }/>
-        <form onSubmit={handleSubmit}>
-            <div className="form_element">
-                <label>
-                    Title
-                    <input type="text" name="title" value={title} onChange={ handleTitleChange }/>
-                </label>
-            </div>
-            <div className="form_element">
-                <label>
-                    Perex
-                    <textarea type="text" name="perex" value={perex} onChange={ handlePerexChange } rows="4" cols="50"/>
-                </label>
-            </div>
-            <div className="form_element">
-                <label>
-                    Content
-                    <textarea type="text" name="content" value={content} onChange={ handleContentChange } rows="10" cols="50"/>
-                </label>
-            </div>
-            <button>Create Article</button>
-        </form>
-        </>
-    )
+                        <input type="text" placeholder="Title" name="title" value={title} onChange={ handleTitleChange }/>
+
+                </div>
+                <div className="form_element">
+
+                        <textarea type="text" placeholder="Perex" name="perex" value={perex} onChange={ handlePerexChange } rows="4" cols="50"/>
+
+                </div>
+                <div className="form_element">
+
+                        <textarea type="text" placeholder="Content" name="content" value={content} onChange={ handleContentChange } rows="10" cols="50"/>
+
+                </div>
+                <button>Create Article</button>
+            </form>
+            </>
+        )/*}  else {
+            console.log(token);
+            setRedirect('/');
+        } */
 }
 
 export default CreateArticle;
